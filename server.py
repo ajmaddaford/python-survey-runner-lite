@@ -14,10 +14,21 @@ def load_schema_file(schema_filename):
     schema_file = open(schema_filename, encoding="utf8")
     return json.load(schema_file)
 
+def get_block_json(survey_id, block_id):
+    survey_json = load_schema_file(survey_id + '.json')
+    for block in survey_json['groups'][0]['blocks']:
+        if block['id'] == block_id:
+            return block
+
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):
     survey_json = load_schema_file(survey_id + '.json')
     return jsonify(survey_json)
+
+@app.route('/survey/<survey_id>/<block_id>', methods=['GET'])
+def block(survey_id, block_id):
+    block_json = get_block_json(survey_id, block_id)
+    return jsonify(block_json)
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT"))
