@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import settings
 import logging
 from structlog import wrap_logger
 import os
 import json
+import form
 
 app = Flask(__name__)
 
@@ -25,10 +26,13 @@ def survey(survey_id):
     survey_json = load_schema_file(survey_id + '.json')
     return jsonify(survey_json)
 
-@app.route('/survey/<survey_id>/<block_id>', methods=['GET'])
+@app.route('/survey/<survey_id>/<block_id>', methods=['GET', 'POST'])
 def block(survey_id, block_id):
     block_json = get_block_json(survey_id, block_id)
-    return jsonify(block_json)
+    f = form.generate_form(block_json)
+    if f.validate_on_submit():
+        return render_template('thank-you.html')
+    return render_template('survey.html', form=f)
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT"))
