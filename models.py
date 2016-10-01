@@ -3,8 +3,7 @@ from database import Base
 
 class QuestionnaireData(Base):
     __tablename__ = 'questionnaire_data'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String(80), unique=True)
+    user_id = Column(String(80), primary_key=True)
     data = Column(String(10000))
 
     def __init__(self, user_id, data):

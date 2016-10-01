@@ -31,8 +31,13 @@ def get_block_json(survey_id, block_id):
 
 def store_data(user_id, block_id, form_data):
     s = json.dumps(form_data)
-    q_data = QuestionnaireData(user_id, s)
-    db_session.add(q_data)
+    existing_data = QuestionnaireData.query.filter_by(user_id=user_id).first()
+    if existing_data:
+        existing_data.data = s
+        db_session.add(existing_data)
+    else:
+        q_data = QuestionnaireData(user_id, s)
+        db_session.add(q_data)
     db_session.commit()
 
 def load_data(user_id, block_id):
