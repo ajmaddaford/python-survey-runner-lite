@@ -35,7 +35,7 @@ def get_field(answer, label):
         field = DateField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
     if answer['type'] == 'Currency' or answer['type'] == 'PositiveInteger' or answer['type'] == 'Integer':
         if answer['mandatory'] is True:
-            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput())
+            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.InputRequired(message=answer['validation']['messages']['MANDATORY'])])
         else:
             field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
     if answer['type'] == 'Textarea':
