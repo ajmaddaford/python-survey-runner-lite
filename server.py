@@ -56,10 +56,15 @@ def store_data(user_id, block_id, form_data):
 
 def load_data(user_id, block_id):
     data = g.get('questionnaire_data', None)
-    if data is None:
-        data = QuestionnaireData.query.filter_by(user_id=user_id).first()
-        g.questionnaire_data = data.data
-    return json.loads(data.data)
+    if data:
+        return json.loads(data)
+
+    questionnaire_data = QuestionnaireData.query.filter_by(user_id=user_id).first()
+    if questionnaire_data:
+        data = g.questionnaire_data = questionnaire_data.data
+        return json.loads(data)
+
+    return None
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):

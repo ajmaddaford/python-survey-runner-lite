@@ -19,8 +19,11 @@ def generate_form(block_json, data):
 
     # Convert dict to class so WTForms can populate the form
     # See http://stackoverflow.com/questions/16327141/why-wont-a-simple-dictionary-populate-obj-properly-for-form-myformobj-dict
-    data_class = Struct(**data)
-    form = QuestionnaireForm(csrf_enabled=False, obj=data_class)
+    if data:
+        data_class = Struct(**data)
+        form = QuestionnaireForm(csrf_enabled=False, obj=data_class)
+    else:
+        form = QuestionnaireForm(csrf_enabled=False)
     return form
 
 def get_field(answer, label):
