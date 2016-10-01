@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, g
 from flask_sqlalchemy import SQLAlchemy
 import settings
 import logging
@@ -29,18 +29,18 @@ def get_block_json(survey_id, block_id):
         if block['id'] == block_id:
             return block
 
-def store_data(form_data):
+def store_data(user_id, block_id, form_data):
     s = json.dumps(form_data)
-    q_data = QuestionnaireData('1', s)
+    q_data = QuestionnaireData(user_id, s)
     db_session.add(q_data)
     db_session.commit()
 
-def load_data(user_id):
+def load_data(user_id, block_id):
     data = g.get('questionnaire_data', None)
     if data is None:
-        data = QuestionnaireData.query.filter_by(user_id='1')
-        g.questionnaire_data = data
-    return data
+        data = QuestionnaireData.query.filter_by(user_id=user_id).first()
+        g.questionnaire_data = data.data
+    return json.loads(data.data)
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):
@@ -49,10 +49,12 @@ def survey(survey_id):
 
 @app.route('/survey/<survey_id>/<block_id>', methods=['GET', 'POST'])
 def block(survey_id, block_id):
+    user_id = 1
+    data = load_data(user_id, block_id)
     block_json = get_block_json(survey_id, block_id)
-    f = form.generate_form(block_json)
+    f = form.generate_form(block_json, data)
     if f.validate_on_submit():
-        store_data(f.data)
+        store_data(user_id, block_id, f.data)
         return render_template('thank-you.html')
     return render_template('survey.html', form=f)
 

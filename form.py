@@ -3,7 +3,11 @@ from wtforms import SelectField, IntegerField, DateField, SelectMultipleField, T
 from wtforms.widgets import TextArea, TextInput, RadioInput, CheckboxInput, ListWidget
 from wtforms import validators
 
-def generate_form(block_json):
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
+def generate_form(block_json, data):
     class QuestionnaireForm(FlaskForm):
         pass
 
@@ -13,7 +17,10 @@ def generate_form(block_json):
                 name = answer['label'] if answer['label'] else question['title']
                 setattr(QuestionnaireForm, answer['id'], get_field(answer, name))
 
-    form = QuestionnaireForm(csrf_enabled=False)
+    # Convert dict to class so WTForms can populate the form
+    # See http://stackoverflow.com/questions/16327141/why-wont-a-simple-dictionary-populate-obj-properly-for-form-myformobj-dict
+    data_class = Struct(**data)
+    form = QuestionnaireForm(csrf_enabled=False, obj=data_class)
     return form
 
 def get_field(answer, label):
