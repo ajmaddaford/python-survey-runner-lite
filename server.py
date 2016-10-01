@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, jsonify, render_template, g
+from flask import Flask, request, redirect, jsonify, render_template, g, url_for
 from flask_sqlalchemy import SQLAlchemy
 import settings
 import logging
@@ -44,13 +44,16 @@ def get_next_block_id(block_id):
     return None
 
 def store_data(user_id, block_id, form_data):
-    s = json.dumps(form_data)
     existing_data = QuestionnaireData.query.filter_by(user_id=user_id).first()
     if existing_data:
-        existing_data.data = s
+        data = json.loads(existing_data.data)
+        data['answers'][block_id] = form_data
+        existing_data.data = json.dumps(data)
         db_session.add(existing_data)
     else:
-        q_data = QuestionnaireData(user_id, s)
+        data = {}
+        data['answers'] = {block_id: form_data}
+        q_data = QuestionnaireData(user_id, json.dumps(data))
         db_session.add(q_data)
     db_session.commit()
 
@@ -75,12 +78,17 @@ def survey(survey_id):
 def block(survey_id, block_id):
     user_id = 1
     data = load_data(user_id, block_id)
+    print(data)
+    if data and block_id in data['answers']:
+        answers = data['answers'][block_id]
+    else:
+        answers = None
     block_json = get_block_json(survey_id, block_id)
-    f = form.generate_form(block_json, data)
+    f = form.generate_form(block_json, answers)
     if f.validate_on_submit():
         store_data(user_id, block_id, f.data)
         next_block = get_next_block_id(block_id)
-        return redirect('/survey/' + survey_id + '/' + next_block)
+        return redirect(url_for('block', survey_id=survey_id, block_id=next_block))
     return render_template('survey.html', form=f)
 
 if __name__ == '__main__':
