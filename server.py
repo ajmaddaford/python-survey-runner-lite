@@ -57,7 +57,7 @@ def store_data(user_id, block_id, form_data):
         db_session.add(q_data)
     db_session.commit()
 
-def load_data(user_id, block_id):
+def load_data(user_id):
     data = g.get('questionnaire_data', None)
     if data:
         return json.loads(data)
@@ -74,11 +74,16 @@ def survey(survey_id):
     survey_json = load_schema_file(survey_id + '.json')
     return jsonify(survey_json)
 
+@app.route('/survey/<survey_id>/answers', methods=['GET'])
+def answers(survey_id):
+    user_id = 1
+    data = load_data(user_id)
+    return jsonify(data)
+
 @app.route('/survey/<survey_id>/<block_id>', methods=['GET', 'POST'])
 def block(survey_id, block_id):
     user_id = 1
-    data = load_data(user_id, block_id)
-    print(data)
+    data = load_data(user_id)
     if data and block_id in data['answers']:
         answers = data['answers'][block_id]
     else:
