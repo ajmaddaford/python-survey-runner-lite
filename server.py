@@ -1,12 +1,20 @@
 from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
 import settings
 import logging
 from structlog import wrap_logger
 import os
 import json
 import form
+from database import init_db, db_session
+from models import QuestionnaireData
 
 app = Flask(__name__)
+init_db()
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 logger = wrap_logger(logging.getLogger(__name__))
@@ -21,6 +29,19 @@ def get_block_json(survey_id, block_id):
         if block['id'] == block_id:
             return block
 
+def store_data(form_data):
+    s = json.dumps(form_data)
+    q_data = QuestionnaireData('1', s)
+    db_session.add(q_data)
+    db_session.commit()
+
+def load_data(user_id):
+    data = g.get('questionnaire_data', None)
+    if data is None:
+        data = QuestionnaireData.query.filter_by(user_id='1')
+        g.questionnaire_data = data
+    return data
+
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):
     survey_json = load_schema_file(survey_id + '.json')
@@ -31,6 +52,7 @@ def block(survey_id, block_id):
     block_json = get_block_json(survey_id, block_id)
     f = form.generate_form(block_json)
     if f.validate_on_submit():
+        store_data(f.data)
         return render_template('thank-you.html')
     return render_template('survey.html', form=f)
 

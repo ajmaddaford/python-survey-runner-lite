@@ -1,10 +1,10 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField, DateField, SelectMultipleField, TextAreaField
 from wtforms.widgets import TextArea, TextInput, RadioInput, CheckboxInput, ListWidget
 from wtforms import validators
 
 def generate_form(block_json):
-    class QuestionnaireForm(Form):
+    class QuestionnaireForm(FlaskForm):
         pass
 
     for section in block_json['sections']:
@@ -22,9 +22,12 @@ def get_field(answer, label):
     if answer['type'] == 'Checkbox':
         field = SelectMultipleField(label=label, description=answer.guidance, choices=build_choices(answer['options']), widget=ListWidget(), option_widget=CheckboxInput())
     if answer['type'] == 'Date':
-        field = DateField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.optional()])
+        field = DateField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
     if answer['type'] == 'Currency' or answer['type'] == 'PositiveInteger' or answer['type'] == 'Integer':
-        field = IntegerField(label=label, description=answer['guidance'], widget=TextInput())
+        if answer['mandatory'] is True:
+            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput())
+        else:
+            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
     if answer['type'] == 'Textarea':
         field = TextAreaField(label=label, description=answer['guidance'], widget=TextArea())
 
