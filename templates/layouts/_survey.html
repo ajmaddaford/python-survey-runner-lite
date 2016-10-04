@@ -1,0 +1,14 @@
+{% extends theme('layouts/_base.html') %}
+
+{% block top_bar %}
+  {% include theme('partials/survey-header.html') %}
+  {% include theme('partials/topbar.html') %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div role="main" class="panel__body" id="main">
+    {% block main %} {% endblock %}
+  </div>
+</div>
+{% endblock %}

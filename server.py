@@ -35,7 +35,13 @@ def get_block_json(survey_id, block_id):
 
 def get_next_block_id(block_id):
     survey_json = g.schema
-    next_block = False
+    block_ids = [block['id'] for block in survey_json['groups'][0]['blocks']]
+    next_index = block_ids.index(block_id) + 1
+    if next_index == len(block_ids):
+        return None
+    else:
+        return block_ids[next_index]
+
     for block in survey_json['groups'][0]['blocks']:
         if next_block:
             return block['id']
@@ -94,7 +100,7 @@ def block(survey_id, block_id):
         store_data(user_id, block_id, f.data)
         next_block = get_next_block_id(block_id)
         return redirect(url_for('block', survey_id=survey_id, block_id=next_block))
-    return render_template('survey.html', form=f)
+    return render_template('survey.html', form=f, schema=block_json)
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT"))

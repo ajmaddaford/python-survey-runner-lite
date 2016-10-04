@@ -1,0 +1,143 @@
+{
+    "mime_type": "application/json/ons/eq",
+    "questionnaire_id": "23",
+    "schema_version": "0.0.1",
+    "survey_id": "023",
+    "title": "Test Repeating",
+    "description": "",
+    "theme": "default",
+    "eq_id": "1",
+    "groups": [
+        {
+            "blocks": [
+                {
+                    "id": "980b148e-0856-4e50-9afe-67a4fa6ae13b",
+                    "sections": [
+                        {
+                            "title": "Reporting period",
+                            "description": "",
+                            "id": "b3c2e966-77ec-4373-b3dd-fdafb5a05cbd",
+                            "questions": [
+                                {
+                                    "answers": [
+                                        {
+                                            "guidance": "",
+                                            "id": "fad63234-1083-4f6a-826a-20b5df6e4baa",
+                                            "label": "First input",
+                                            "mandatory": true,
+                                            "type": "PositiveInteger",
+                                            "validation": {
+                                                "messages": {
+                                                    "MANDATORY": "Please answer before continuing."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+                    "sections": [
+                        {
+                            "title": "Reporting period",
+                            "description": "",
+                            "id": "5355deab-0b1e-495d-b4ab-f3e1f7c0c6f1",
+                            "questions": [
+                                {
+                                    "answers": [
+                                        {
+                                            "guidance": "",
+                                            "id": "78774493-5b64-45c4-8072-22f1a9638095",
+                                            "label": "Second input",
+                                            "mandatory": true,
+                                            "type": "PositiveInteger",
+                                            "validation": {
+                                                "messages": {
+                                                    "MANDATORY": "Please answer before continuing."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "id": "f74d1147-673c-497a-9616-763829d944ac",
+            "title": "Group 1"
+        },
+        {
+            "blocks": [
+                {
+                    "id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                    "sections": [
+                        {
+                            "title": "",
+                            "description": "",
+                            "id": "91631df0-4356-4e9f-a9d9-ce8b08d26eb3",
+                            "questions": [
+                                {
+                                    "answers": [
+                                        {
+                                            "guidance": "",
+                                            "id": "680f2ff9-d5a5-4057-b1cd-9fde2660b244",
+                                            "label": "First input",
+                                            "mandatory": true,
+                                            "type": "PositiveInteger",
+                                            "validation": {
+                                                "messages": {
+                                                    "MANDATORY": "Please answer before continuing."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                    "sections": [
+                        {
+                            "title": "Reporting period",
+                            "description": "",
+                            "id": "2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+                            "questions": [
+                                {
+                                    "answers": [
+                                        {
+                                            "guidance": "",
+                                            "id": "5667e5eb-f9d3-4482-9257-edf752000708",
+                                            "label": "Second input",
+                                            "mandatory": true,
+                                            "type": "PositiveInteger",
+                                            "validation": {
+                                                "messages": {
+                                                    "MANDATORY": "Please answer before continuing."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            "title": "Group 2",
+            "routing_rules": [
+                {
+                    "repeat": {
+                         "answer_id" : "78774493-5b64-45c4-8072-22f1a9638095"
+                    }
+                }
+            ]
+        }
+    ]
+}

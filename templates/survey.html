@@ -1,6 +1,8 @@
 <html>
 <h1>Survey</h1>
 
+<form action="" class="form qa-questionnaire-form" role="form" method="POST" novalidate>
+
 {% if form.errors %}
     <ul class="errors">
         {% for field_name, field_errors in form.errors|dictsort if field_errors %}
@@ -11,15 +13,16 @@
     </ul>
 {% endif %}
 
-<form action="" class="form qa-questionnaire-form" role="form" method="POST" novalidate>
-    {{ form.hidden_tag() }}
-    {% for field in form %}
-
-      {% if field.type not in ['CSRFTokenField', 'HiddenField'] %}
-        <h4>{{ field.label }}</h4>
-        <p>{{field()}}</p>
-      {% endif %}
+{% for section in schema['sections'] %}
+    <p>Section: {{ section['id'] }}</p>
+    {% for question in section['questions'] %}
+        <p>Question: {{ question['id'] }}</p>
+        {% for answer in question['answers'] %}
+            {% include 'answer.html' %}
+        {% endfor %}
     {% endfor %}
+{% endfor %}
+
     <button class="btn btn--secondary qa-btn-submit" type="submit" name="action[save_continue]">Save &amp; Continue</button>
 
 </form>

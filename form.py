@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField, DateField, SelectMultipleField, TextAreaField
 from wtforms.widgets import TextArea, TextInput, RadioInput, CheckboxInput, ListWidget
 from wtforms import validators
+from widgets import CurrencyInput
 
 class Struct:
     def __init__(self, **entries):
@@ -33,16 +34,22 @@ def get_field(answer, label):
         field = SelectMultipleField(label=label, description=answer.guidance, choices=build_choices(answer['options']), widget=ListWidget(), option_widget=CheckboxInput())
     if answer['type'] == 'Date':
         field = DateField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
-    if answer['type'] == 'Currency' or answer['type'] == 'PositiveInteger' or answer['type'] == 'Integer':
+    if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
             field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.InputRequired(message=answer['validation']['messages']['MANDATORY'])])
         else:
+            label = '<span class="label__inner">'+label+'</span>'
+            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
+    if answer['type'] == 'PositiveInteger' or answer['type'] == 'Integer':
+        if answer['mandatory'] is True:
+            field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.InputRequired(message=answer['validation']['messages']['MANDATORY'])])
+        else:
+            label = '<span class="label__inner">'+label+'</span>'
             field = IntegerField(label=label, description=answer['guidance'], widget=TextInput(), validators=[validators.Optional()])
     if answer['type'] == 'Textarea':
         field = TextAreaField(label=label, description=answer['guidance'], widget=TextArea())
 
     return field
-
 
 def build_choices(options):
     choices = []

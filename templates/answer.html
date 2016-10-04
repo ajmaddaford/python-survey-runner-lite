@@ -1,0 +1,10 @@
+{%- set answer_guidance %}
+  {% if answer['guidance'] %}
+    {% include 'partials/guidance.html' %}
+  {% endif %}
+{% endset -%}
+
+<p>Answer: {{ answer['id'] }}</p>
+<p><strong>{{form[answer['id']].label}}</strong></p>
+<p>{{form[answer['id']]}}</p>
+{{answer_guidance|safe}}
